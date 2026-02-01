@@ -64,10 +64,10 @@ void setup() {
 
   M5.Display.clear();
   M5.Display.setTextDatum(middle_center);
-  M5.Display.setTextSize(5);
-  M5.Display.drawString("Midi", M5.Display.width()/2, M5.Display.height()/2 - 10);
+  M5.Display.setTextSize(2);
+  M5.Display.drawString("Wet Hands", M5.Display.width()/2, M5.Display.height()/2 - 10);
   M5.Display.setTextSize(1);
-  M5.Display.drawString("Press BtnA", M5.Display.width()/2, M5.Display.height()-18);
+  M5.Display.drawString("Press M5 Button", M5.Display.width()/2, M5.Display.height()-18);
 }
 
 void loop() {
@@ -75,7 +75,7 @@ void loop() {
   if (!played && M5.BtnA.wasPressed()) {
     played = true;
     M5.Display.clear();
-    M5.Display.setTextSize(3);
+    M5.Display.setTextSize(1);
     M5.Display.drawString("Playing...", M5.Display.width()/2, M5.Display.height()/2);
     playMelody();
     M5.Display.clear();
