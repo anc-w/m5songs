@@ -1,7 +1,7 @@
 // wet hands - c418, script made by @NugetNet
 #include <Arduino.h>
 #include <M5Unified.h>
-
+// stop doesnt work yet
 #define BUZZER_PIN 2
 #define NOTE_REST 0
 #define NOTE_A2 110
