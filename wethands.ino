@@ -36,7 +36,10 @@ int melody[] = { NOTE_A2, NOTE_Cs3, NOTE_A3, NOTE_B3, NOTE_Cs4, NOTE_B3, NOTE_A3
 int durationsMs[] = { 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 1154, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 1154, 2309, 383, 383, 383, 383, 383, 383, 769, 383, 383, 2309, 383, 383, 383, 383, 383, 1154, 383, 383, 2309, 383, 383, 383, 383, 383, 383, 383, 383, 769, 383, 383, 1539, 383, 383, 383, 383, 1154, 383, 383, 1154, 383, 383, 383, 383, 383, 769, 383, 383, 383, 383, 3465, 383, 383, 383, 383, 383, 1539, 769, 383, 383, 769, 383, 383, 769, 383, 383, 383, 383, 2694, 383, 383, 383, 383, 383, 1539, 769, 3079, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 1215, 383, 1106, 998, 383, 383, 383, 383, 769, 1539, 383, 383, 769, 769, 383, 1924, 383, 383, 383, 1539, 383, 383, 769, 383, 383, 383, 383, 769, 383, 1539, 1154, 2309, 2309, 2309, 3079, 3079, 3079, 3079, 383, 383, 3079, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 769, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 769, 383, 383, 1154, 383, 383, 383, 1539, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 383, 1539, 1539, 383, 383, 383, 383, 383, 383, 383, 383, 1539, 383, 383, 383, 383, 1539, 383, 383, 383, 383, 1539, 769, 769, 383, 383, 383, 383, 383, 383, 383, 383, 3079 };
 
 bool played = false;
+bool stopRequested = false;
+
 void playTone(int freq, int duration) {
+  if (stopRequested) return;
   if (freq == NOTE_REST) {
     ledcWriteTone(BUZZER_PIN, 0);
     delay(duration);
@@ -51,11 +54,13 @@ void playTone(int freq, int duration) {
 void playMelody() {
   const int MAX_DUR = 2000;
   for (size_t i = 0; i < sizeof(melody) / sizeof(melody[0]); i++) {
+    if (stopRequested) break;
     int dur = durationsMs[i];
     if (dur > MAX_DUR) dur = MAX_DUR;
     playTone(melody[i], dur);
   }
 }
+
 void setup() {
   auto cfg = M5.config();
   M5.begin(cfg);
@@ -68,18 +73,31 @@ void setup() {
   M5.Display.drawString("Wet Hands", M5.Display.width()/2, M5.Display.height()/2 - 10);
   M5.Display.setTextSize(1);
   M5.Display.drawString("Press M5 Button", M5.Display.width()/2, M5.Display.height()-18);
+  M5.Display.drawString("Press Power to stop", M5.Display.width()/2, M5.Display.height()-16);
 }
 
 void loop() {
   M5.update();
   if (!played && M5.BtnA.wasPressed()) {
     played = true;
+    stopRequested = false;
     M5.Display.clear();
     M5.Display.setTextSize(1);
     M5.Display.drawString("Playing...", M5.Display.width()/2, M5.Display.height()/2);
     playMelody();
-    M5.Display.clear();
-    M5.Display.setTextSize(2);
-    M5.Display.drawString("Done", M5.Display.width()/2, M5.Display.height()/2);
+    if (!stopRequested) {
+      M5.Display.clear();
+      M5.Display.setTextSize(2);
+      M5.Display.drawString("Done", M5.Display.width()/2, M5.Display.height()/2);
+    } else {
+      M5.Display.clear();
+      M5.Display.setTextSize(2);
+      M5.Display.drawString("Stopped", M5.Display.width()/2, M5.Display.height()/2);
+    }
+  }
+
+  if (M5.BtnPWR.wasPressed()) {
+    stopRequested = true;
+    ledcWriteTone(BUZZER_PIN, 0);
   }
 }
