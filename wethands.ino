@@ -1,8 +1,8 @@
+// wet hands - c418, script made by @NugetNet
 #include <Arduino.h>
 #include <M5Unified.h>
-// wet hands - c418, script made by @NugetNet
+
 #define BUZZER_PIN 2
-#define NOTE_REST 0
 #define NOTE_REST 0
 #define NOTE_A2 110
 #define NOTE_Cs3 139
@@ -61,39 +61,48 @@ void playMelody() {
   }
 }
 
-void setup() {
-  auto cfg = M5.config();
-  M5.begin(cfg);
-
-  ledcAttach(BUZZER_PIN, 2000, 8);
-
+void drawMenu() {
   M5.Display.clear();
   M5.Display.setTextDatum(middle_center);
   M5.Display.setTextSize(2);
   M5.Display.drawString("Wet Hands", M5.Display.width()/2, M5.Display.height()/2 - 10);
   M5.Display.setTextSize(1);
   M5.Display.drawString("Press M5 Button", M5.Display.width()/2, M5.Display.height()-18);
-  M5.Display.drawString("Press Power to stop", M5.Display.width()/2, M5.Display.height()-16);
+  M5.Display.drawString("Press Power to stop", M5.Display.width()/2, M5.Display.height()-14);
+}
+
+void setup() {
+  auto cfg = M5.config();
+  M5.begin(cfg);
+
+  ledcAttach(BUZZER_PIN, 2000, 8);
+
+  drawMenu();
 }
 
 void loop() {
   M5.update();
-  if (!played && M5.BtnA.wasPressed()) {
+
+  if (M5.BtnA.wasPressed() && !played) {
     played = true;
     stopRequested = false;
     M5.Display.clear();
     M5.Display.setTextSize(1);
     M5.Display.drawString("Playing...", M5.Display.width()/2, M5.Display.height()/2);
     playMelody();
-    if (!stopRequested) {
-      M5.Display.clear();
-      M5.Display.setTextSize(2);
-      M5.Display.drawString("Done", M5.Display.width()/2, M5.Display.height()/2);
-    } else {
+
+    if (stopRequested) {
       M5.Display.clear();
       M5.Display.setTextSize(2);
       M5.Display.drawString("Stopped", M5.Display.width()/2, M5.Display.height()/2);
+    } else {
+      M5.Display.clear();
+      M5.Display.setTextSize(2);
+      M5.Display.drawString("Done", M5.Display.width()/2, M5.Display.height()/2);
     }
+    delay(1200);
+    played = false;
+    drawMenu();
   }
 
   if (M5.BtnPWR.wasPressed()) {
