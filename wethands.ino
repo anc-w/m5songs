@@ -68,7 +68,7 @@ void drawMenu() {
   M5.Display.drawString("Wet Hands", M5.Display.width()/2, M5.Display.height()/2 - 10);
   M5.Display.setTextSize(1);
   M5.Display.drawString("Press M5 Button", M5.Display.width()/2, M5.Display.height()-18);
-  M5.Display.drawString("Press Power to stop", M5.Display.width()/2, M5.Display.height()-14);
+  M5.Display.drawString("Press Power to stop", M5.Display.width()/2, M5.Display.height()-5);
 }
 
 void setup() {
