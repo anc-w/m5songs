@@ -26,7 +26,7 @@
 ## Installation
 
 1. Install the [Arduino IDE](https://www.arduino.cc/en/software).  
-2. Install the **ESP32 Dev Module** via **Boards Manager**.  
+2. Install the **esp32 library** via **Library Manager**.  
 3. Install the **M5Unified** library.  
 4. Copy the `.ino` file of the song you want to play.  
 5. Open the `.ino` file in Arduino IDE.  
